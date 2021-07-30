@@ -177,7 +177,7 @@ return_values = 0 # Try to return values to lisp. If > 0, always return a handle
 #               2019  Ben Dudson <benjamin.dudson@york.ac.uk>
 
 lispifiers = {
-    bool       : lambda x: "T" if x else "NIL",
+    bool       : lambda x: ":true" if x else ":false",
     type(None) : lambda x: "NIL",
     int        : str,
     float      : str,
