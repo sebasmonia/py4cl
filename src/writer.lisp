@@ -50,9 +50,10 @@ Default implementation creates a handle to an unknown Lisp object.")
 (defmethod pythonize ((obj real))
   "Write a real number. 
    Note that python doesn't handle 'd','f', 's' or 'L' exponent markers"
-  (substitute-if #\e (lambda (ch)
-                       (member ch '(#\d #\D #\f #\F #\s #\S #\l #\L)))
-                 (write-to-string obj)))
+  (format nil "_dec(\"~a\")"
+          (substitute-if #\e (lambda (ch)
+                               (member ch '(#\d #\D #\f #\F #\s #\S #\l #\L)))
+                         (write-to-string obj))))
 
 (defmethod pythonize ((obj complex))
   "Create string of the form \"(1+2j\". 
@@ -127,12 +128,14 @@ evals a list with a single element as a tuple
 
 (defmethod pythonize ((obj symbol))
   "Handle symbols. Need to handle NIL,
-converting it to Python None, and convert T to True."
+converting it to Python None, and convert T to True.
+Additionally, convert :true to True and :false to False."
   (if obj
-      (if (eq obj t)
-          "True"
-          (concatenate 'string
-                       "_py4cl_Symbol(':" (string-downcase (string obj)) "')"))
+      (cond ((eq obj t) "True")
+            ((eq obj :true) "True")
+            ((eq obj :false) "False")
+            (t (concatenate 'string
+                            "_py4cl_Symbol(':" (string-downcase (string obj)) "')")))
       "None"))
 
 (defmethod pythonize ((obj hash-table))

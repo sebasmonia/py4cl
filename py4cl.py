@@ -12,6 +12,7 @@ import numbers
 import itertools
 import os
 import json
+from decimal import Decimal as __dec__
 
 try:
     from io import StringIO # Python 3
@@ -534,6 +535,11 @@ try:
     eval_globals["_py4cl_numpy"] = numpy
     eval_globals["_py4cl_load_pickled_ndarray"] \
       = load_pickled_ndarray
+except:
+    pass
+
+try:
+    eval_globals["_dec"] = __dec__
 except:
     pass
 
